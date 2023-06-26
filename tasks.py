@@ -25,7 +25,7 @@ def compute_task_noise(request_json):
 
     return json.loads(gdf.to_json())
 
-
+@app.task()
 def compute_task_wind(request_json):
     time.sleep(10) # simulate long running task
 
