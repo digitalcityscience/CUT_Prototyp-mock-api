@@ -56,8 +56,8 @@ def process_task_noise():
         abort(400, "Missing max speed in calculation_settings")
 
     try:
-        single_result = tasks.compute_task_noise.delay(request.json)
-        response = {'taskId': single_result.id}
+        task = tasks.compute_task_noise.delay(request.json)
+        response = {'taskId': task.id}
 
         # return jsonify(response), HTTPStatus.OK
         return make_response(
@@ -89,8 +89,9 @@ def process_task_wind():
         abort(400, "Missing wind speed in calculation_settings")
 
     try:
-        single_result = tasks.compute_task_wind.delay(request.json)
-        response = {'taskId': single_result.id}
+        # trigger async task. result object will contain task id etc. 
+        task = tasks.compute_task_wind.delay(request.json)
+        response = {'taskId': task.id}
 
         # return jsonify(response), HTTPStatus.OK
         return make_response(
