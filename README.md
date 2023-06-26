@@ -9,7 +9,6 @@ post to /noise/trigger_calculation to create new noise task.
 post a json payload like this 
 ```
 {
-        "simulation": "noise",
         "bbox": [
             [
               10.010449058044909,
@@ -36,6 +35,7 @@ post a json payload like this
             "max_speed": 70,
             "traffic_quota": 0.5
         }
+}
 ```
 
 
@@ -44,7 +44,6 @@ post to /wind/trigger_calculation to create new noise task.
 post a json payload like this 
 ```
 {
-        "simulation": "noise",
         "bbox": [
             [
               10.010449058044909,
@@ -71,6 +70,7 @@ post a json payload like this
             "wind_speed": 70,
             "wind_direction": 0.5
         }
+}
 ```
 
 
