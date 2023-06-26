@@ -1,6 +1,9 @@
 # CUT_Prototyp-mock-api
 mocking wind and noise services
 
+## TRIGGER NEW TASKS
+All tasks will take 10sec. to "compute".
+
 ### Trigger mock WIND task
 post to /noise/trigger_calculation to create new noise task. 
 post a json payload like this 
