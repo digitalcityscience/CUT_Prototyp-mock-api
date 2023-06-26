@@ -41,7 +41,7 @@ def bad_request(message: str):
 
 
 # process calculation requests 
-@app.route("/noise/trigger_calculation", methods=['POST'])
+@app.route("/trigger_calculation_noise", methods=['POST'])
 def process_task_noise():
     # Validate request
     if not request.json:
@@ -74,7 +74,7 @@ def process_task_noise():
         )
     
 # process calculation requests 
-@app.route("/wind/trigger_calculation", methods=['POST'])
+@app.route("/trigger_calculation_wind", methods=['POST'])
 def process_task_wind():
     # Validate request
     if not request.json:
