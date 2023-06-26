@@ -1,0 +1,34 @@
+version: "3.9"
+services:
+  redis:
+    image: redis:latest
+    ports:
+      - 6379:6379
+    restart: "always"
+    command: redis-server --requirepass YOUR_REDIS_PASS --appendonly yes
+    volumes:
+      - "./redis/data:/data"
+
+  api:
+    build:
+      context: .
+    ports:
+      - 5001:5001
+    restart: "always"
+    command: ["python", "entrypoint.py"]  # use entrypoint.sh for production 
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASS=YOUR_REDIS_PASS
+      - CLIENT_ID=YOUR_ID
+      - CLIENT_PASSWORD=YOUR_PASSWORD
+
+  worker:
+    build:
+      context: .
+    restart: "always"
+    command: celery -A tasks worker --loglevel=info
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASS=YOUR_REDIS_PASS

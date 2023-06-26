@@ -1,0 +1,16 @@
+geopandas
+Flask
+Flask-Compress
+Flask-Cors
+Flask-HTTPAuth
+requests
+matplotlib
+celery[redis]
+decorator
+Flask
+Flask-Compress
+Flask-Cors
+Flask-HTTPAuth
+gunicorn
+urllib3
+Werkzeug
