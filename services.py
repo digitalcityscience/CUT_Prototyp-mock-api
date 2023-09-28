@@ -1,110 +1,56 @@
-from typing import List
-import math
-from shapely.geometry import box, Polygon
-import random
-
-# creates a matrix of bboxes covering the project area polygon
-def create_bbox_matrix(bbox_coords, bbox_length) -> List[box]:
-    polygon = Polygon(bbox_coords)
-    bbox_matrix = []
-    polygon_envelop = polygon.exterior.envelope
-
-    envelop_minX = min(polygon_envelop.exterior.xy[0])
-    envelop_maxX = max(polygon_envelop.exterior.xy[0])
-    envelop_minY = min(polygon_envelop.exterior.xy[1])
-    envelop_maxY = max(polygon_envelop.exterior.xy[1])
-
-    # number of rows and cols of bbox matrix
-    max_cols = math.floor((envelop_maxX - envelop_minX) / bbox_length) + 1
-    max_rows = math.floor((envelop_maxY - envelop_minY) / bbox_length) + 1
-
-    for row in range(0, max_rows):
-        minY = envelop_minY + bbox_length * row
-        maxY = minY + bbox_length
-        for col in range(0, max_cols):
-            minX = envelop_minX + bbox_length * col
-            maxX = minX + bbox_length
-
-            # minX, minY, maxX, maxY
-            bbox = box(minX, minY, maxX, maxY)
-            if polygon.intersection(bbox):
-                # only add bbox to matrix, if actually intersecting with the project area polygon
-                bbox_matrix.append(bbox)
-
-    return bbox_matrix
+def map2range(value, low, high, new_low, new_high):
+    """map a value from one range to another"""
+    return min(value * 1.0 / (high - low + 1) * (new_high - new_low + 1), new_high)
 
 
-def add_result_values(gdf, calculation_settings, simulation):
+def get_mock_noise_value(row, calculation_settings) -> int:
+    """
+    formula for mock noise value
+    depending on the cityblocks highway and buildings proximity/abundancy value
+    (highway/(buildings/4)) * speed*5 * amount*4
+    Traffic noise increases with highway, max_speed and traffic_quota values
+    Traffic noise decreases, the higher the building value
 
-    
-    def get_random_wind_value(wind_speed):
-        possible_values = [0, 0.2, 0.4]
-        if wind_speed >= 15:
-            possible_values.append(0.6)
-        if wind_speed >= 30:
-            possible_values.append(0.8)
-            possible_values.pop(0)
-        if wind_speed >= 45:
-            possible_values.append(1)
-            possible_values.pop(0)
-        
-        print("possible wind values", possible_values)
-        return random.choice(possible_values)
-    
-    def get_random_noise_value(max_speed):
-        possible_values = [0, 1, 2, 3]
-        if max_speed >= 15:
-            possible_values.append(4)
-        if max_speed > 30:
-            possible_values.append(5)
-            possible_values.pop(0)
-        if max_speed > 50:
-            possible_values.append(6)
-            possible_values.pop(0)
-        if max_speed > 60:
-            possible_values.append(7)
-            possible_values.pop(0)
-        
-        return random.choice(possible_values)
-    
-    # add random result values to each feature
-    if simulation == "noise":
-        gdf["value"] = gdf.apply(lambda row: get_random_noise_value(calculation_settings['max_speed']), axis=1)
-    if simulation == "wind":
-        gdf["value"] = gdf.apply(lambda row: get_random_wind_value(calculation_settings['wind_speed']), axis=1)
+    map to end value of 0-7 (int!)
+    max values in city_blocks
+        - buildings: 15 (edge cases are much higher, but ignored)
+        - highways: 15 (edge cases are much higher, but ignored)
+    """
+    # max values for traffic_quota, speed, city_blocks: highways, building
+    mock_value = (
+        (min(row["highway"], 15) / (max(1, (row["building"] / 4))))
+        * calculation_settings["max_speed"]
+        * 5
+        * calculation_settings["traffic_quota"]
+        * 4
+    )
 
-    return gdf
-    
+    # 75km/h max_speed, max highway val ==15, min building val ==1
+    max_mock_value = 75 * 1 * 4 * (15 / 1)
+    min_mock_value = 25 * 5 * 0.25 * 4 * 1
+
+    return round(map2range(mock_value, min_mock_value, max_mock_value, 0, 7))
 
 
+def get_mock_wind_value(row, calculation_settings) -> int:
+    """
+    formula for mock wind value
+    depending on the cityblocks' highway and buildings proximity/abundancy
+    Assuming that buildings can block wind, while highways/large streets lead to more wind exposure
+    (highway/(buildings/8)) * wind_speed
+    Wind-exposure increases with highway and wind_speed values
+    Wind-exposure decreases with the buildings value
 
-if __name__ == "__main__":
-    request_data = {
-        "simulation": "noise",
-        "bbox": [
-            [
-              10.010449058044909,
-              53.533773119496075
-            ],
-            [
-              10.011056083791818,
-              53.533773119496075
-            ],
-            [
-              10.011056083791818,
-              53.53398760073027
-            ],
-            [
-              10.010449058044909,
-              53.53398760073027
-            ],
-            [
-              10.010449058044909,
-              53.533773119496075
-            ]
-          ],
-        "calculation_settings": {
-            "max_speed": 70,
-            "wind_direction": 15
-        }
-    }
+    map to value of 0-1 (float!)
+    max values in city_blocks
+        - buildings: 15  (edge cases are much higher, but ignored)
+        - highways: 15  (edge cases are much higher, but ignored)
+    """
+    mock_value = (
+        min(row["highway"], 15) / (max(1, (row["building"] / 8)))
+    ) * calculation_settings["wind_speed"]
+
+    # 80km/h wind, max highway val, min building val.
+    max_mock_value = 80 * (15 / 1)
+
+    return map2range(mock_value, 0, max_mock_value, 0, 1)
