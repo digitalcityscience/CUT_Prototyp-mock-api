@@ -2,8 +2,11 @@
 mocking wind and noise services
 
 ## TRIGGER NEW TASKS
-All tasks will take 10sec. to "compute".
-Result will include more windy / noisy areas for calculation requests with higher speeds. However results are completely non-sense.
+All tasks will take min. 10sec. to "compute".
+Result will include more windy / noisy areas for calculation requests with higher speeds. 
+Areas with strong vincinity to big roads will be windier/noisier.
+Densely built areas with many houses will be less windy/noisy. 
+However results are completely non-sense.
 
 ### Trigger mock NOISE task
 post to /trigger_calculation_noise to create new noise task. 
@@ -34,7 +37,7 @@ post a json payload like this
           ],
         "calculation_settings": {
             "max_speed": 70,
-            "traffic_quota": 0.5 ## gets ignored in mock
+            "traffic_quota": 0.5
         }
 }
 ```
