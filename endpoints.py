@@ -55,7 +55,7 @@ def process_task_noise():
     if not request.json.get('traffic_quota'):
         abort(400, "Missing traffic_quota in request body")
     if not request.json.get('max_speed'):
-        abort(400, "Missing max_speed in calculation_settings")
+        abort(400, "Missing max_speed in request body")
 
     try:
         task = tasks.compute_task_noise.delay(request.json)
@@ -85,10 +85,10 @@ def process_task_wind():
     # Validate request
     if not request.json.get('buildings'):
         abort(400, "Missing buildings in request body")
-    if not request.json.get('calculation_settings'):
-        abort(400, "Missing calculation_settings in request body")
-    if not request.json.get('calculation_settings').get('wind_speed'):
-        abort(400, "Missing wind speed in calculation_settings")
+    if not request.json.get('wind_direction'):
+        abort(400, "Missing wind_direction in request body")
+    if not request.json.get('wind_speed'):
+        abort(400, "Missing wind speed in request body")
 
     try:
         # trigger async task. result object will contain task id etc. 
