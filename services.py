@@ -21,7 +21,7 @@ def get_mock_noise_value(row, calculation_settings) -> int:
         (min(row["highway"], 15) / (max(1, (row["building"] / 4))))
         * calculation_settings["max_speed"]
         * 5
-        * calculation_settings["traffic_quota"]
+        * (calculation_settings["traffic_quota"] / 100)
         * 4
     )
 
