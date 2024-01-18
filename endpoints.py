@@ -83,8 +83,8 @@ def process_task_wind():
         abort(400)
 
     # Validate request
-    if not request.json.get('bbox'):
-        abort(400, "Missing bbox in request body")
+    if not request.json.get('buildings'):
+        abort(400, "Missing buildings in request body")
     if not request.json.get('calculation_settings'):
         abort(400, "Missing calculation_settings in request body")
     if not request.json.get('calculation_settings').get('wind_speed'):
