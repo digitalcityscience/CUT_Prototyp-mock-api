@@ -126,7 +126,7 @@ def process_task_wind():
         then contains the tasks return value.
 """
 
-@app.route("/cut-public-api/noise/jobs/<taskId>/status", methods=['GET'])
+@app.route("/cut-public-api/noise/jobs/<task_id>/status", methods=['GET'])
 def is_task_ready_noise(task_id: str):
     async_result = AsyncResult(task_id, app=celery_app)
 
@@ -143,7 +143,7 @@ def is_task_ready_noise(task_id: str):
         HTTPStatus.OK,
     )
 
-@app.route("/cut-public-api/wind/jobs/<taskId>/status", methods=['GET'])
+@app.route("/cut-public-api/wind/jobs/<task_id>/status", methods=['GET'])
 def is_task_ready_wind(task_id: str):
     async_result = AsyncResult(task_id, app=celery_app)
 
@@ -162,7 +162,7 @@ def is_task_ready_wind(task_id: str):
 
 
 
-@app.route("/cut-public-api/noise/jobs/<taskId>", methods=['GET'])
+@app.route("/cut-public-api/noise/jobs/<task_id>", methods=['GET'])
 def get_task_noise(task_id: str):
     async_result = AsyncResult(task_id, app=celery_app)
 
@@ -180,7 +180,7 @@ def get_task_noise(task_id: str):
         HTTPStatus.OK,
     )
 
-@app.route("/cut-public-api/wind/jobs/<taskId>", methods=['GET'])
+@app.route("/cut-public-api/wind/jobs/<task_id>", methods=['GET'])
 def get_task_wind(task_id: str):
     async_result = AsyncResult(task_id, app=celery_app)
 
