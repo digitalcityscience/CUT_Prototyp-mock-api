@@ -59,7 +59,7 @@ def process_task_noise():
 
     try:
         task = tasks.compute_task_noise.delay(request.json)
-        response = {'taskId': task.id}
+        response = {'job_id': task.id}
 
         # return jsonify(response), HTTPStatus.OK
         return make_response(
@@ -93,7 +93,7 @@ def process_task_wind():
     try:
         # trigger async task. result object will contain task id etc. 
         task = tasks.compute_task_wind.delay(request.json)
-        response = {'taskId': task.id}
+        response = {'job_id': task.id}
 
         # return jsonify(response), HTTPStatus.OK
         return make_response(
