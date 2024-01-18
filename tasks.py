@@ -18,7 +18,7 @@ city_blocks_gdf = geopandas.read_file("./data/hamburg_city_blocks.gpkg")
 def compute_task_noise(request_json):
     time.sleep(10)  # simulate long running task
 
-    bbox_pol = box(**geopandas.GeoDataFrame.from_features(request_json["buildings"]["features"]).total_bounds)
+    bbox_pol = box(*geopandas.GeoDataFrame.from_features(request_json["buildings"]["features"]).total_bounds)
     input_gdf = city_blocks_gdf.clip(bbox_pol)
 
     calculation_settings = {
@@ -38,7 +38,7 @@ def compute_task_noise(request_json):
 def compute_task_wind(request_json):
     time.sleep(10)  # simulate long running task
 
-    bbox_pol = box(**geopandas.GeoDataFrame.from_features(request_json["buildings"]["features"]).total_bounds)
+    bbox_pol = box(*geopandas.GeoDataFrame.from_features(request_json["buildings"]["features"]).total_bounds)
     input_gdf = city_blocks_gdf.clip(bbox_pol)
 
     calculation_settings = {
