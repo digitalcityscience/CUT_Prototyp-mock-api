@@ -1,6 +1,6 @@
 import geopandas
 import pandas as pd
-from shapely.geometry import Polygon
+from shapely.geometry import box
 import json
 import time
 
@@ -18,11 +18,16 @@ city_blocks_gdf = geopandas.read_file("./data/hamburg_city_blocks.gpkg")
 def compute_task_noise(request_json):
     time.sleep(10)  # simulate long running task
 
-    bbox_pol = Polygon(request_json["bbox"])
+    bbox_pol = box(**geopandas.GeoDataFrame.from_features(request_json["buildings"]["features"]).total_bounds)
     input_gdf = city_blocks_gdf.clip(bbox_pol)
 
+    calculation_settings = {
+        "max_speed": request_json["max_speed"],
+        "traffic_quota": request_json["traffic_quota"]
+    }
+
     input_gdf["value"] = input_gdf.apply(
-        lambda row: get_mock_noise_value(row, request_json["calculation_settings"]),
+        lambda row: get_mock_noise_value(row, calculation_settings),
         axis=1,
     )
 
@@ -33,11 +38,16 @@ def compute_task_noise(request_json):
 def compute_task_wind(request_json):
     time.sleep(10)  # simulate long running task
 
-    bbox_pol = Polygon(request_json["bbox"])
+    bbox_pol = box(**geopandas.GeoDataFrame.from_features(request_json["buildings"]["features"]).total_bounds)
     input_gdf = city_blocks_gdf.clip(bbox_pol)
 
+    calculation_settings = {
+        "wind_speed": request_json["wind_speed"],
+        "wind_direction": request_json["wind_direction"]
+    }
+
     input_gdf["value"] = input_gdf.apply(
-        lambda row: get_mock_wind_value(row, request_json["calculation_settings"]),
+        lambda row: get_mock_wind_value(row, calculation_settings),
         axis=1,
     )
 
