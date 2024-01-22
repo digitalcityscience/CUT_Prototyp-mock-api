@@ -173,7 +173,8 @@ def get_task_noise(task_id: str):
         'taskState': async_result.state,
     }
     if async_result.ready():
-        response['result'] = async_result.get()
+        response['result'] = {}
+        response["result"]["geojson"] = async_result.get()
 
     return make_response(
         response,
@@ -191,7 +192,8 @@ def get_task_wind(task_id: str):
         'taskState': async_result.state,
     }
     if async_result.ready():
-        response['result'] = async_result.get()
+        response['result'] = {}
+        response["result"]["geojson"] = async_result.get()
 
     return make_response(
         response,
