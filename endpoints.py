@@ -52,10 +52,6 @@ def process_task_noise():
         abort(400, "Missing buildings in request body")
     if not request.json.get('roads'):
         abort(400, "Missing roads in request body")
-    if not request.json.get('traffic_quota'):
-        abort(400, "Missing traffic_quota in request body")
-    if not request.json.get('max_speed'):
-        abort(400, "Missing max_speed in request body")
 
     try:
         task = tasks.compute_task_noise.delay(request.json)

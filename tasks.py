@@ -21,9 +21,20 @@ def compute_task_noise(request_json):
     bbox_pol = box(*geopandas.GeoDataFrame.from_features(request_json["buildings"]["features"]).total_bounds)
     input_gdf = city_blocks_gdf.clip(bbox_pol)
 
+    roads_gdf = geopandas.GeoDataFrame.from_features(request_json["roads"]["features"])
+
+    max_speed = roads_gdf["max_speed"].mean(),
+    traffic_quota = 100
+
+    if request_json.get("max_speed", None) is not None:
+        max_speed = request_json["max_speed"]
+
+    if request_json.get("traffic_quota", None) is not None:
+        traffic_quota = request_json["traffic_quota"]
+
     calculation_settings = {
-        "max_speed": request_json["max_speed"],
-        "traffic_quota": request_json["traffic_quota"]
+        "max_speed": max_speed,
+        "traffic_quota": traffic_quota
     }
 
     input_gdf["value"] = input_gdf.apply(
