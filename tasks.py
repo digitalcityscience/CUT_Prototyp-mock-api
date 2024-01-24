@@ -9,7 +9,6 @@ from celery_app import app
 
 from services import get_mock_noise_value, get_mock_wind_value
 
-
 logger = get_task_logger(__name__)
 city_blocks_gdf = geopandas.read_file("./data/hamburg_city_blocks.gpkg")
 
@@ -23,7 +22,8 @@ def compute_task_noise(request_json):
 
     roads_gdf = geopandas.GeoDataFrame.from_features(request_json["roads"]["features"])
 
-    max_speed = roads_gdf["max_speed"].mean(),
+    max_speed = roads_gdf["max_speed"].mean()
+
     traffic_quota = 100
 
     if request_json.get("max_speed", None) is not None:
